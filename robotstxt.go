@@ -183,6 +183,17 @@ func (r *RobotsData) FindGroup(agent string) (ret *Group) {
 	return
 }
 
+// DisallowedGroups return list of groups where this path is disallowed.
+func (r *RobotsData) DisallowedGroups(path string) (results []*Group) {
+	for _, g := range r.groups {
+		if !g.Test(path) {
+			results = append(results, g)
+		}
+	}
+
+	return results
+}
+
 func (g *Group) Test(path string) bool {
 	if r := g.findRule(path); r != nil {
 		return r.allow
