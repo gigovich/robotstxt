@@ -284,6 +284,26 @@ func TestWildcardPrefix(t *testing.T) {
 	}
 }
 
+const robots_text_dissallow = "User-agent: *\nDisallow: /\n\nUser-agent: IsraBot\nDisallow: /\n\nUser-agent: Orthogaffe\nDisallow: /\n\n"
+
+func TestDisallowedAgents(t *testing.T) {
+	r, err := FromString(robots_text_dissallow)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+
+	agents := r.DisallowedAgents("/")
+	if _, ok := agents["israbot"]; !ok {
+		t.Fail()
+		return
+	}
+
+	if _, ok := agents["orthogaffe"]; !ok {
+		t.Fail()
+		return
+	}
+}
+
 func BenchmarkParseFromString001(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		FromString(robots_text_001)
